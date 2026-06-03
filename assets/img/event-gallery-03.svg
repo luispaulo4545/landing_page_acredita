@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" role="img" aria-label="Placeholder de networking">
+  <rect width="800" height="560" fill="#f7efe3"/>
+  <rect x="0" y="0" width="800" height="260" fill="#11372f"/>
+  <circle cx="240" cy="236" r="76" fill="#c68673"/>
+  <circle cx="400" cy="236" r="76" fill="#dec18b"/>
+  <circle cx="560" cy="236" r="76" fill="#bd8171"/>
+  <g stroke="#123830" stroke-width="14" stroke-linecap="round" opacity=".72">
+    <path d="M128 420h544"/>
+    <path d="M174 470h452"/>
+  </g>
+</svg>

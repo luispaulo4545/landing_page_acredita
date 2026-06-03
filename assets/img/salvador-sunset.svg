@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 820" role="img" aria-label="Farol da Barra em Salvador ao por do sol">
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#122f29"/>
+      <stop offset=".42" stop-color="#29433b"/>
+      <stop offset=".68" stop-color="#bd7a59"/>
+      <stop offset="1" stop-color="#f0c37b"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#405e54"/>
+      <stop offset="1" stop-color="#071f1b"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <rect width="1400" height="820" fill="url(#sky)"/>
+  <circle cx="880" cy="395" r="96" fill="#f4c37a" opacity=".72" filter="url(#glow)"/>
+  <rect y="500" width="1400" height="320" fill="url(#sea)"/>
+  <path d="M0 560c190-56 345-28 520-3 238 34 403 11 587-32 115-27 209-31 293-13v308H0z" fill="#09251f" opacity=".66"/>
+  <g opacity=".42" stroke="#f0c995" stroke-width="5" fill="none">
+    <path d="M0 615c190-38 350-26 512 1 214 36 365 25 554-13 120-24 220-24 334-3"/>
+    <path d="M0 672c176-31 337-22 512 6 188 30 375 19 548-9 120-20 227-19 340-1"/>
+  </g>
+  <g transform="translate(895 155)">
+    <path d="M-220 508c74-94 174-146 306-154 126-8 219 31 292 123v42h-598z" fill="#102d27"/>
+    <path d="M-84 344h270l42 174H-128z" fill="#18332d"/>
+    <path d="M-56 348h214l32 134H-88z" fill="#c8ac83" opacity=".28"/>
+    <path d="M-60 316h218v46H-60z" fill="#efe4cf"/>
+    <path d="M-31 214h160v104H-31z" fill="#f7eee0"/>
+    <path d="M-16 148h130v70H-16z" fill="#102a24"/>
+    <path d="M11 64h76l20 84H-9z" fill="#f6ead8"/>
+    <path d="M17 36h64l6 32H11z" fill="#102a24"/>
+    <path d="M47 0h8v38h-8z" fill="#102a24"/>
+    <rect x="10" y="88" width="88" height="34" fill="#102a24"/>
+    <rect x="2" y="238" width="56" height="80" fill="#102a24"/>
+    <rect x="73" y="238" width="56" height="80" fill="#102a24"/>
+    <g fill="#102a24">
+      <rect x="-26" y="390" width="42" height="72"/>
+      <rect x="37" y="390" width="42" height="72"/>
+      <rect x="100" y="390" width="42" height="72"/>
+    </g>
+    <g stroke="#f6ead8" stroke-width="6" fill="none" opacity=".75">
+      <path d="M-168 488c128-80 278-83 450-8"/>
+      <path d="M-138 520c102-53 238-54 402-4"/>
+    </g>
+    <path d="M282 330c34-94 88-143 164-144M390 204c14 76 6 150-24 222M410 282c35-33 76-48 124-45" stroke="#102a24" stroke-width="10" fill="none" stroke-linecap="round" opacity=".85"/>
+  </g>
+</svg>

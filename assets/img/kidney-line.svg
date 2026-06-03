@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" role="img" aria-label="Ilustracao anatomica de rim em line art">
+  <g fill="none" stroke="#bd8171" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M219 72c-79 8-145 80-147 182-2 116 57 224 134 262 52 26 105 7 125-38 22-51-17-97-1-144 15-44 73-62 77-124 5-79-65-149-188-138z" stroke-width="10"/>
+    <path d="M229 140c-53 19-88 70-87 135 1 74 39 143 85 169" stroke-width="5" opacity=".74"/>
+    <path d="M303 298c-45-5-80 18-95 62" stroke-width="7"/>
+    <path d="M309 318c54 2 91 37 111 83" stroke-width="8"/>
+    <path d="M222 358c33 37 74 48 129 37" stroke-width="5" opacity=".72"/>
+    <path d="M354 395c20 44 20 93 0 149" stroke-width="8"/>
+    <path d="M384 388c37 39 54 85 51 140" stroke-width="6"/>
+    <path d="M192 172c20 26 44 43 72 49" stroke-width="4" opacity=".55"/>
+    <path d="M155 248c29 15 61 20 96 15" stroke-width="4" opacity=".55"/>
+  </g>
+</svg>

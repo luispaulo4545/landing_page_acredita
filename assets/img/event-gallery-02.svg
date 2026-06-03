@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" role="img" aria-label="Placeholder de palestra">
+  <rect width="800" height="560" fill="#123830"/>
+  <circle cx="641" cy="104" r="180" fill="#c68673" opacity=".38"/>
+  <rect x="74" y="96" width="248" height="320" rx="8" fill="#f8f1e6" opacity=".18"/>
+  <path d="M386 148h270M386 210h198M386 272h245" stroke="#e7c596" stroke-width="12" stroke-linecap="round" opacity=".7"/>
+  <circle cx="198" cy="190" r="52" fill="#e0b086" opacity=".78"/>
+  <path d="M126 344c22-71 124-71 146 0" stroke="#f6ead8" stroke-width="16" stroke-linecap="round"/>
+</svg>

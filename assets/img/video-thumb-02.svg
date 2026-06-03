@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Thumbnail de video">
+  <rect width="800" height="500" fill="#123830"/>
+  <path d="M0 360c152-82 297-62 430-4 142 62 251 68 370-4v148H0z" fill="#c68673" opacity=".72"/>
+  <circle cx="400" cy="250" r="58" fill="#f6ead8" opacity=".86"/>
+  <path d="M386 218l58 32-58 32z" fill="#123830"/>
+</svg>

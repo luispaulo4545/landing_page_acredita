@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Placeholder de Petrolina ao por do sol">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b332d"/>
+      <stop offset=".55" stop-color="#b36d53"/>
+      <stop offset="1" stop-color="#f2d7a3"/>
+    </linearGradient>
+    <linearGradient id="r" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#577c6b"/>
+      <stop offset="1" stop-color="#0a2822"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g)"/>
+  <circle cx="292" cy="290" r="86" fill="#f0bd79" opacity=".84"/>
+  <path d="M0 482h1200v318H0z" fill="url(#r)"/>
+  <path d="M0 430c165 41 249-6 398 19 186 31 287 92 510 64 112-14 206-58 292-47v334H0z" fill="#0b2a24" opacity=".7"/>
+  <g stroke="#deb57c" stroke-width="7" fill="none" opacity=".62">
+    <path d="M80 450c120 40 256 41 391 0"/>
+    <path d="M225 430c82 24 174 22 263-8"/>
+    <path d="M760 486c80-58 167-61 265-7"/>
+    <path d="M810 520c75-35 155-34 239 0"/>
+  </g>
+  <g fill="#09231e" opacity=".95">
+    <rect x="552" y="372" width="56" height="186"/>
+    <rect x="620" y="332" width="70" height="226"/>
+    <rect x="708" y="388" width="48" height="170"/>
+    <path d="M888 560V390l26-42 28 42v170z"/>
+  </g>
+</svg>
