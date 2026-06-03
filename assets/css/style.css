@@ -26,6 +26,7 @@ body {
   color: var(--ink);
   background: #535546;
   font-family: var(--sans);
+  overflow-x: hidden;
 }
 
 body.nav-open {
@@ -54,24 +55,17 @@ select {
   margin: 0 auto;
 }
 
-main,
-.footer {
-  width: min(100%, 1024px);
-  margin-inline: auto;
-}
-
 .header {
   position: absolute;
   z-index: 10;
   top: 0;
-  left: 50%;
-  width: min(100%, 1024px);
-  transform: translateX(-50%);
+  left: 0;
+  width: 100%;
   display: grid;
   grid-template-columns: 218px 1fr 132px;
   align-items: start;
   gap: 24px;
-  padding: 22px 38px 0 54px;
+  padding: 22px 70px 0;
   color: var(--white);
 }
 
@@ -688,15 +682,22 @@ main,
   .hero {
     min-height: auto;
     padding-bottom: 34px;
+    background-size: auto, 100% auto, auto;
+    background-position: center top;
+    background-repeat: no-repeat;
   }
 
   .hero-copy {
     width: min(100% - 46px, 884px);
+    margin-left: auto;
+    margin-right: auto;
     padding-top: 125px;
   }
 
   .workshop-logo {
-    width: min(100%, 650px);
+    width: 100%;
+    max-width: 650px;
+    margin-left: 0;
     margin-bottom: 26px;
   }
 
@@ -710,6 +711,7 @@ main,
 
   .hero-meta {
     display: grid;
+    gap: 18px;
   }
 
   .meta-separator {
@@ -737,6 +739,20 @@ main,
   .copy {
     margin-top: 14px;
   }
+
+  .about-grid {
+    min-height: auto;
+    padding: 26px 0 34px;
+    overflow: hidden;
+  }
+
+  .kidney-about {
+    top: 0;
+    right: -120px;
+    width: 520px;
+    height: 100%;
+    opacity: .18;
+  }
 }
 
 @media (max-width: 560px) {
@@ -745,14 +761,47 @@ main,
   }
 
   .workshop-logo {
-    width: 112%;
-    max-width: none;
-    margin-left: -6%;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  .hero-copy {
+    width: calc(100% - 40px);
+    padding-top: 134px;
+  }
+
+  .hero-meta {
+    margin-bottom: 24px;
+  }
+
+  .meta-item {
+    gap: 12px;
+  }
+
+  .meta-item strong {
+    font-size: 14px;
+  }
+
+  .meta-item span {
+    font-size: 13px;
   }
 
   .hero-pill {
     min-width: 0;
     width: 100%;
+    min-height: 44px;
+    padding-inline: 18px;
+    text-align: center;
+    line-height: 1.15;
+  }
+
+  .about .container,
+  .venues .container,
+  .partners .container,
+  .signup .container,
+  .footer .container {
+    width: calc(100% - 40px);
   }
 
   .about h2,
