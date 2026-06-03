@@ -1,7 +1,7 @@
 :root {
-  --green: #1b2a1d;
-  --green-2: #142318;
-  --green-3: #223220;
+  --green: #535546;
+  --green-2: #45483a;
+  --green-3: #626553;
   --peach: #e5a17f;
   --peach-2: #d69070;
   --cream: #f4f1eb;
@@ -24,7 +24,7 @@ html {
 body {
   margin: 0;
   color: var(--ink);
-  background: #1b2a1d;
+  background: #535546;
   font-family: var(--sans);
 }
 
@@ -142,9 +142,9 @@ main,
   overflow: hidden;
   color: var(--white);
   background:
-    linear-gradient(90deg, rgba(27, 40, 28, .18), rgba(27, 40, 28, 0)),
+    linear-gradient(90deg, rgba(83, 85, 70, .18), rgba(83, 85, 70, 0)),
     url("../img/hero-farol-bg.png") center / cover no-repeat,
-    #1b2a1d;
+    #535546;
 }
 
 .hero::after {
@@ -152,8 +152,8 @@ main,
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(27, 42, 29, .52) 0%, rgba(27, 42, 29, .36) 35%, rgba(27, 42, 29, .12) 58%, rgba(27, 42, 29, 0) 84%),
-    linear-gradient(180deg, rgba(27, 42, 29, .05) 0%, rgba(27, 42, 29, .1) 100%);
+    linear-gradient(90deg, rgba(83, 85, 70, .52) 0%, rgba(83, 85, 70, .36) 35%, rgba(83, 85, 70, .12) 58%, rgba(83, 85, 70, 0) 84%),
+    linear-gradient(180deg, rgba(83, 85, 70, .05) 0%, rgba(83, 85, 70, .1) 100%);
   pointer-events: none;
 }
 
@@ -585,6 +585,14 @@ main,
   font-weight: 800;
 }
 
+.socials svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+}
+
 .footer-col {
   display: grid;
   gap: 3px;
@@ -598,6 +606,21 @@ main,
   font-size: 10px;
   letter-spacing: .08em;
   text-transform: uppercase;
+}
+
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.contact-link svg {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 13px;
+  stroke: var(--peach);
+  stroke-width: 1.6;
+  fill: none;
 }
 
 .copy {
@@ -624,7 +647,7 @@ main,
     grid-template-columns: auto auto;
     align-items: center;
     padding: 12px 22px;
-    background: rgba(15, 33, 24, .95);
+    background: rgba(83, 85, 70, .95);
   }
 
   .logo-link img {
@@ -648,7 +671,7 @@ main,
     display: grid;
     gap: 0;
     padding: 10px 24px 18px;
-    background: rgba(15, 33, 24, .98);
+    background: rgba(83, 85, 70, .98);
     transform: translateY(-120%);
     transition: transform .25s ease;
   }
