@@ -339,6 +339,14 @@ function slugify(value) {
 }
 
 async function uploadVideoFile(file, eventSlug, videoTitle) {
+  const config = window.ACREDITA_SUPABASE || {};
+  const maxVideoSizeMb = Number(config.maxVideoSizeMb || 50);
+  const maxVideoSizeBytes = maxVideoSizeMb * 1024 * 1024;
+
+  if (file.size > maxVideoSizeBytes) {
+    throw new Error(`O video "${file.name}" tem ${(file.size / 1024 / 1024).toFixed(1)} MB. O limite atual e ${maxVideoSizeMb} MB.`);
+  }
+
   const uploadData = await requestJson("/api/upload-url", {
     method: "POST",
     body: JSON.stringify({
@@ -347,8 +355,6 @@ async function uploadVideoFile(file, eventSlug, videoTitle) {
       videoTitle
     })
   });
-
-  const config = window.ACREDITA_SUPABASE || {};
 
   if (!window.supabase || !config.url || !config.anonKey) {
     throw new Error("Configure o Supabase publico em assets/js/supabase-config.js.");
