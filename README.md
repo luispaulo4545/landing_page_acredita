@@ -22,4 +22,17 @@ O formulário envia os dados para o Web App configurado em:
 const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYYZUHCxrhkqQJfCxZAvcvetHLUw8lumpry1HoI3v2gNyxRtC-cUtam-ChpeNteIZ/exec";
 ```
 
+## ADM de eventos
+
+O cadastro de eventos usa funcoes em `api/` na Vercel. Configure estas variaveis de ambiente no painel da Vercel:
+
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_STORAGE_BUCKET`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+
+O fluxo do video e: o ADM faz login, o site pede uma URL assinada em `/api/upload-url`, o navegador sobe o video direto para o Supabase Storage e depois salva os dados do evento em `/api/events-create`.
+
 O arquivo `google-apps-script.gs` é apenas o código-fonte para colar no Google Apps Script. Ele não precisa ser publicado na Vercel.

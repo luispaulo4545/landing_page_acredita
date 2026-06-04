@@ -5,8 +5,6 @@ const form = document.querySelector("#registrationForm");
 const whatsappInput = document.querySelector("#whatsapp");
 const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYYZUHCxrhkqQJfCxZAvcvetHLUw8lumpry1HoI3v2gNyxRtC-cUtam-ChpeNteIZ/exec";
 
-let supabaseClient = null;
-
 function closeMenu() {
   if (!nav || !menuToggle) {
     return;
@@ -153,87 +151,35 @@ if (form) {
   });
 }
 
-function getSupabaseClient() {
-  const config = window.ACREDITA_SUPABASE || {};
-
-  if (supabaseClient) {
-    return supabaseClient;
-  }
-
-  if (!config.url || !config.anonKey || !window.supabase) {
-    return null;
-  }
-
-  supabaseClient = window.supabase.createClient(config.url, config.anonKey);
-  return supabaseClient;
-}
-
-function getStorageBucket() {
-  return (window.ACREDITA_SUPABASE && window.ACREDITA_SUPABASE.storageBucket) || "event-videos";
-}
-
 function getFallbackEvents() {
   return Array.isArray(window.ACREDITA_EVENTS) ? window.ACREDITA_EVENTS : [];
 }
 
-async function fetchSupabaseEvents() {
-  const client = getSupabaseClient();
+async function requestJson(url, options = {}) {
+  const response = await fetch(url, {
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    },
+    ...options
+  });
+  const payload = await response.json().catch(() => ({}));
 
-  if (!client) {
-    return null;
+  if (!response.ok) {
+    throw new Error(payload.error || "Nao foi possivel concluir a operacao.");
   }
 
-  const { data, error } = await client
-    .from("events")
-    .select(`
-      id,
-      title,
-      location,
-      event_date,
-      description,
-      cover_url,
-      event_videos (
-        title,
-        video_url,
-        description,
-        sort_order
-      ),
-      event_testimonials (
-        name,
-        role,
-        quote,
-        sort_order
-      )
-    `)
-    .eq("is_published", true)
-    .order("created_at", { ascending: false });
+  return payload;
+}
 
-  if (error) {
-    throw error;
-  }
+async function fetchApiEvents() {
+  const payload = await requestJson("/api/events-list", {
+    method: "GET",
+    headers: {}
+  });
 
-  return data.map((eventItem) => ({
-    id: eventItem.id,
-    title: eventItem.title,
-    location: eventItem.location,
-    date: eventItem.event_date,
-    description: eventItem.description,
-    cover: eventItem.cover_url || "assets/img/video-thumb-01.svg",
-    videos: [...(eventItem.event_videos || [])]
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .map((video) => ({
-        title: video.title,
-        url: video.video_url,
-        description: video.description
-      })),
-    testimonials: [...(eventItem.event_testimonials || [])]
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .map((testimonial) => ({
-        name: testimonial.name,
-        role: testimonial.role,
-        quote: testimonial.quote
-      }))
-  }));
+  return payload.events || [];
 }
 
 function normalizeVideoUrl(url) {
@@ -343,8 +289,7 @@ async function renderEventsPage() {
   eventStack.innerHTML = '<p class="empty-state">Carregando eventos...</p>';
 
   try {
-    const supabaseEvents = await fetchSupabaseEvents();
-    renderEventCards(supabaseEvents || getFallbackEvents(), eventStack);
+    renderEventCards(await fetchApiEvents(), eventStack);
   } catch (error) {
     renderEventCards(getFallbackEvents(), eventStack);
   }
@@ -393,50 +338,34 @@ function slugify(value) {
     .replace(/(^-|-$)/g, "");
 }
 
-function getSafeFileName(fileName) {
-  const parts = fileName.split(".");
-  const extension = parts.length > 1 ? parts.pop().toLowerCase() : "mp4";
-  return `${slugify(parts.join(".")) || "video"}.${extension}`;
-}
-
 async function uploadVideoFile(file, eventSlug, videoTitle) {
-  const client = getSupabaseClient();
-  const path = `${eventSlug}/${Date.now()}-${slugify(videoTitle)}-${getSafeFileName(file.name)}`;
+  const uploadData = await requestJson("/api/upload-url", {
+    method: "POST",
+    body: JSON.stringify({
+      eventSlug,
+      fileName: file.name,
+      videoTitle
+    })
+  });
 
-  const { error } = await client.storage
-    .from(getStorageBucket())
-    .upload(path, file, {
-      cacheControl: "31536000",
-      upsert: false
+  const config = window.ACREDITA_SUPABASE || {};
+
+  if (!window.supabase || !config.url || !config.anonKey) {
+    throw new Error("Configure o Supabase publico em assets/js/supabase-config.js.");
+  }
+
+  const uploadClient = window.supabase.createClient(config.url, config.anonKey);
+  const { error } = await uploadClient.storage
+    .from(uploadData.bucket)
+    .uploadToSignedUrl(uploadData.path, uploadData.token, file, {
+      contentType: file.type || "application/octet-stream"
     });
 
   if (error) {
     throw error;
   }
 
-  const { data } = client.storage.from(getStorageBucket()).getPublicUrl(path);
-  return data.publicUrl;
-}
-
-async function isCurrentUserAdmin() {
-  const client = getSupabaseClient();
-  const { data: userData, error: userError } = await client.auth.getUser();
-
-  if (userError || !userData.user) {
-    return false;
-  }
-
-  const { data, error } = await client
-    .from("profiles")
-    .select("role")
-    .eq("id", userData.user.id)
-    .single();
-
-  if (error) {
-    return false;
-  }
-
-  return data.role === "admin";
+  return `${config.url}/storage/v1/object/public/${uploadData.bucket}/${uploadData.path}`;
 }
 
 function setupEventsAdmin() {
@@ -445,7 +374,6 @@ function setupEventsAdmin() {
     return;
   }
 
-  const client = getSupabaseClient();
   const adminLoginSection = document.querySelector("#adminLoginSection");
   const adminSection = document.querySelector("#eventAdminSection");
   const adminLoginForm = document.querySelector("#adminLoginForm");
@@ -478,74 +406,53 @@ function setupEventsAdmin() {
   }
 
   async function refreshAdminEvents() {
-    if (!client) {
-      savedEvents.innerHTML = '<p class="empty-state">Configure o Supabase em assets/js/supabase-config.js.</p>';
-      return;
-    }
-
-    const { data, error } = await client
-      .from("events")
-      .select("title, location, event_date, created_at")
-      .order("created_at", { ascending: false });
-
-    if (error) {
+    try {
+      const events = await fetchApiEvents();
+      savedEvents.innerHTML = events.length
+        ? events.map((eventItem) => `
+          <article>
+            <strong>${escapeHtml(eventItem.title)}</strong>
+            <span>${escapeHtml(eventItem.location)} | ${escapeHtml(eventItem.date)}</span>
+          </article>
+        `).join("")
+        : '<p class="empty-state">Nenhum evento salvo ainda.</p>';
+    } catch (error) {
       savedEvents.innerHTML = `<p class="empty-state">${escapeHtml(error.message)}</p>`;
-      return;
     }
-
-    savedEvents.innerHTML = data.length
-      ? data.map((eventItem) => `
-        <article>
-          <strong>${escapeHtml(eventItem.title)}</strong>
-          <span>${escapeHtml(eventItem.location)} | ${escapeHtml(eventItem.event_date)}</span>
-        </article>
-      `).join("")
-      : '<p class="empty-state">Nenhum evento salvo no Supabase ainda.</p>';
   }
 
-  if (!client) {
-    adminLoginMessage.textContent = "Configure URL e anon key do Supabase em assets/js/supabase-config.js.";
-  } else {
-    client.auth.getSession().then(async ({ data }) => {
-      if (data.session && await isCurrentUserAdmin()) {
-        unlockAdmin();
-        refreshAdminEvents();
-      }
-    });
-  }
+  requestJson("/api/admin-session", {
+    method: "GET",
+    headers: {}
+  }).then((session) => {
+    if (session.authenticated) {
+      unlockAdmin();
+      refreshAdminEvents();
+    }
+  }).catch(() => {});
 
   adminLoginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-
-    if (!client) {
-      adminLoginMessage.textContent = "Supabase ainda nao configurado.";
-      return;
-    }
-
     adminLoginMessage.textContent = "Validando acesso...";
 
-    const { error } = await client.auth.signInWithPassword({
-      email: adminEmail.value,
-      password: adminPassword.value
-    });
+    try {
+      await requestJson("/api/admin-login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: adminEmail.value,
+          password: adminPassword.value
+        })
+      });
 
-    if (error) {
-      adminLoginMessage.textContent = error.message || "E-mail ou senha invalidos.";
+      adminLoginMessage.textContent = "";
+      adminPassword.value = "";
+      unlockAdmin();
+      refreshAdminEvents();
+    } catch (error) {
+      adminLoginMessage.textContent = error.message;
       adminPassword.value = "";
       adminPassword.focus();
-      return;
     }
-
-    if (!await isCurrentUserAdmin()) {
-      await client.auth.signOut();
-      adminLoginMessage.textContent = "Este usuario nao tem permissao de administrador.";
-      return;
-    }
-
-    adminLoginMessage.textContent = "";
-    adminPassword.value = "";
-    unlockAdmin();
-    refreshAdminEvents();
   });
 
   document.querySelector("[data-add-video]").addEventListener("click", () => {
@@ -563,9 +470,10 @@ function setupEventsAdmin() {
   });
 
   document.querySelector("#logoutAdmin").addEventListener("click", async () => {
-    if (client) {
-      await client.auth.signOut();
-    }
+    await requestJson("/api/admin-logout", {
+      method: "POST",
+      body: "{}"
+    }).catch(() => {});
 
     lockAdmin();
     adminEmail.value = "";
@@ -578,17 +486,6 @@ function setupEventsAdmin() {
   adminForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    if (!client) {
-      message.textContent = "Supabase ainda nao configurado.";
-      return;
-    }
-
-    if (!await isCurrentUserAdmin()) {
-      message.textContent = "Sessao sem permissao de administrador.";
-      lockAdmin();
-      return;
-    }
-
     const formData = new FormData(adminForm);
     const title = formData.get("title").trim();
     const eventSlug = slugify(`${title}-${formData.get("location")}-${formData.get("date")}`);
@@ -600,25 +497,6 @@ function setupEventsAdmin() {
     message.textContent = "Enviando videos e salvando evento...";
 
     try {
-      const { data: userData } = await client.auth.getUser();
-      const { data: insertedEvent, error: eventError } = await client
-        .from("events")
-        .insert({
-          title,
-          location: formData.get("location").trim(),
-          event_date: formData.get("date").trim(),
-          description: formData.get("description").trim(),
-          cover_url: formData.get("cover").trim() || "assets/img/video-thumb-01.svg",
-          is_published: true,
-          created_by: userData.user.id
-        })
-        .select("id")
-        .single();
-
-      if (eventError) {
-        throw eventError;
-      }
-
       const videos = [];
       for (const [index, group] of videoGroups.entries()) {
         const file = group.querySelector("[data-video-file]").files[0];
@@ -633,37 +511,36 @@ function setupEventsAdmin() {
           throw new Error("Selecione o arquivo de todos os videos preenchidos.");
         }
 
+        message.textContent = `Enviando video ${index + 1}...`;
         const videoUrl = await uploadVideoFile(file, eventSlug, videoTitle || `Video ${index + 1}`);
         videos.push({
-          event_id: insertedEvent.id,
           title: videoTitle || `Video ${index + 1}`,
-          video_url: videoUrl,
-          description,
-          sort_order: index
+          url: videoUrl,
+          description
         });
       }
 
-      if (videos.length) {
-        const { error: videosError } = await client.from("event_videos").insert(videos);
-        if (videosError) {
-          throw videosError;
-        }
-      }
-
-      const testimonials = testimonialGroups.map((group, index) => ({
-        event_id: insertedEvent.id,
+      const testimonials = testimonialGroups.map((group) => ({
         name: group.querySelector("[data-testimonial-name]").value.trim(),
         role: group.querySelector("[data-testimonial-role]").value.trim(),
-        quote: group.querySelector("[data-testimonial-quote]").value.trim(),
-        sort_order: index
+        quote: group.querySelector("[data-testimonial-quote]").value.trim()
       })).filter((testimonial) => testimonial.name || testimonial.role || testimonial.quote);
 
-      if (testimonials.length) {
-        const { error: testimonialsError } = await client.from("event_testimonials").insert(testimonials);
-        if (testimonialsError) {
-          throw testimonialsError;
-        }
-      }
+      message.textContent = "Publicando evento...";
+      await requestJson("/api/events-create", {
+        method: "POST",
+        body: JSON.stringify({
+          event: {
+            title,
+            location: formData.get("location").trim(),
+            date: formData.get("date").trim(),
+            description: formData.get("description").trim(),
+            cover: formData.get("cover").trim() || "assets/img/video-thumb-01.svg"
+          },
+          videos,
+          testimonials
+        })
+      });
 
       adminForm.reset();
       resetDynamicFields();
