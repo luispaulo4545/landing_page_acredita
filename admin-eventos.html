@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Eventos | Acredita Gestao</title>
+  <meta name="description" content="Pagina administrativa para cadastrar eventos, videos e depoimentos.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="events-page admin-page">
+  <header class="header events-header" id="topo">
+    <a class="logo-link" href="index.html" aria-label="Acredita Gestao">
+      <img src="assets/img/logo-acredita-transparente.png" alt="Acredita Gestao">
+    </a>
+    <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" aria-label="Menu principal">
+      <a href="index.html#evento">O evento</a>
+      <a href="eventos.html">Eventos</a>
+      <a href="index.html#contato">Contato</a>
+    </nav>
+    <a class="pill header-pill" href="eventos.html">Ver eventos</a>
+  </header>
+
+  <main>
+    <section class="events-hero admin-hero">
+      <div class="container">
+        <p class="section-label">Area de cadastro</p>
+        <h1>Subir videos e criar eventos</h1>
+        <p>Cadastre edicoes, cole links de videos do YouTube ou Vimeo e adicione depoimentos. Depois copie o arquivo gerado para publicar no site.</p>
+      </div>
+    </section>
+
+    <section class="event-admin">
+      <div class="container admin-grid">
+        <form class="admin-form" id="eventAdminForm">
+          <div class="admin-panel">
+            <p class="section-label">Evento</p>
+            <input name="title" type="text" placeholder="Nome do evento" required>
+            <input name="location" type="text" placeholder="Cidade / Estado" required>
+            <input name="date" type="text" placeholder="Data do evento" required>
+            <input name="cover" type="url" placeholder="Imagem de capa ou thumb (URL ou caminho)">
+            <textarea name="description" placeholder="Resumo do evento" required></textarea>
+          </div>
+
+          <div class="admin-panel">
+            <p class="section-label">Videos</p>
+            <div id="videoFields" class="dynamic-fields"></div>
+            <button class="secondary-button" type="button" data-add-video>Adicionar video</button>
+          </div>
+
+          <div class="admin-panel">
+            <p class="section-label">Depoimentos</p>
+            <div id="testimonialFields" class="dynamic-fields"></div>
+            <button class="secondary-button" type="button" data-add-testimonial>Adicionar depoimento</button>
+          </div>
+
+          <div class="admin-actions">
+            <button class="pill" type="submit">Salvar evento</button>
+            <button class="secondary-button" type="button" id="resetAdminForm">Limpar</button>
+          </div>
+          <p class="form-message admin-message" role="status" aria-live="polite"></p>
+        </form>
+
+        <aside class="admin-preview">
+          <div class="preview-head">
+            <p class="section-label">Dados gerados</p>
+            <button class="secondary-button" type="button" id="copyEventsData">Copiar</button>
+          </div>
+          <textarea id="eventsDataOutput" readonly></textarea>
+          <div class="saved-events" id="savedEvents"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/events-data.js"></script>
+  <script src="assets/js/script.js?v=20260604-events"></script>
+</body>
+</html>
