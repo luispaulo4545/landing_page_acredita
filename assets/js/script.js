@@ -530,7 +530,7 @@ function setupEventsAdmin() {
     });
 
     if (error) {
-      adminLoginMessage.textContent = "E-mail ou senha invalidos.";
+      adminLoginMessage.textContent = error.message || "E-mail ou senha invalidos.";
       adminPassword.value = "";
       adminPassword.focus();
       return;
