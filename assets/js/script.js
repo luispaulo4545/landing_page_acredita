@@ -355,10 +355,18 @@ function createVideoField(video = {}) {
   wrapper.className = "field-group";
   wrapper.innerHTML = `
     <input data-video-title type="text" placeholder="Titulo do video" value="${escapeHtml(video.title)}">
-    <input data-video-file type="file" accept="video/mp4,video/webm,video/quicktime,video/*">
+    <label class="upload-control">
+      <input data-video-file type="file" accept="video/mp4,video/webm,video/quicktime,video/*">
+      <span>Selecionar video do computador</span>
+    </label>
+    <small class="selected-file" data-selected-file>Nenhum arquivo selecionado</small>
     <textarea data-video-description placeholder="Descricao curta">${escapeHtml(video.description)}</textarea>
     <button class="remove-button" type="button">Remover video</button>
   `;
+  wrapper.querySelector("[data-video-file]").addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    wrapper.querySelector("[data-selected-file]").textContent = file ? file.name : "Nenhum arquivo selecionado";
+  });
   wrapper.querySelector(".remove-button").addEventListener("click", () => wrapper.remove());
   return wrapper;
 }

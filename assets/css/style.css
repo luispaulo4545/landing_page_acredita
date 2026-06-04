@@ -899,6 +899,42 @@ select {
   background: #fff7ef;
 }
 
+.upload-note {
+  margin: -2px 0 12px;
+}
+
+.upload-control {
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  padding: 0 14px;
+  color: #111512;
+  background: linear-gradient(180deg, #edae8a, var(--peach));
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.upload-control input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.selected-file {
+  display: block;
+  color: #626553;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .admin-form textarea {
   min-height: 92px;
   resize: vertical;
