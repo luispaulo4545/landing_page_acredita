@@ -863,6 +863,10 @@ select {
   display: none;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;

@@ -460,11 +460,13 @@ function setupEventsAdmin() {
 
   function unlockAdmin() {
     adminLoginSection.hidden = true;
+    adminSection.hidden = false;
     adminSection.classList.remove("is-locked");
   }
 
   function lockAdmin() {
     adminLoginSection.hidden = false;
+    adminSection.hidden = true;
     adminSection.classList.add("is-locked");
   }
 
