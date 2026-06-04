@@ -8,14 +8,14 @@ window.ACREDITA_EVENTS = [
     cover: "assets/img/video-thumb-01.svg",
     videos: [
       {
-        title: "Chamada oficial do workshop",
-        url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        description: "Apresentacao inicial do evento e dos temas centrais."
+        title: "Video de abertura",
+        url: "assets/videos/video-de-abertura.mp4",
+        description: "Substitua este caminho pelo arquivo final publicado em assets/videos."
       },
       {
-        title: "Boas praticas em hemodialise",
-        url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        description: "Trecho de conteudo tecnico para profissionais de saude."
+        title: "Depoimentos do evento",
+        url: "assets/videos/depoimentos-do-evento.mp4",
+        description: "Substitua este caminho pelo arquivo final publicado em assets/videos."
       }
     ],
     testimonials: [

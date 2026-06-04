@@ -5,6 +5,8 @@ const form = document.querySelector("#registrationForm");
 const whatsappInput = document.querySelector("#whatsapp");
 const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbywYYZUHCxrhkqQJfCxZAvcvetHLUw8lumpry1HoI3v2gNyxRtC-cUtam-ChpeNteIZ/exec";
 
+let supabaseClient = null;
+
 function closeMenu() {
   if (!nav || !menuToggle) {
     return;
@@ -151,24 +153,87 @@ if (form) {
   });
 }
 
-function getStoredEvents() {
-  try {
-    return JSON.parse(localStorage.getItem("acreditaEvents") || "[]");
-  } catch (error) {
-    return [];
+function getSupabaseClient() {
+  const config = window.ACREDITA_SUPABASE || {};
+
+  if (supabaseClient) {
+    return supabaseClient;
   }
+
+  if (!config.url || !config.anonKey || !window.supabase) {
+    return null;
+  }
+
+  supabaseClient = window.supabase.createClient(config.url, config.anonKey);
+  return supabaseClient;
 }
 
-function getAllEvents() {
-  const defaultEvents = Array.isArray(window.ACREDITA_EVENTS) ? window.ACREDITA_EVENTS : [];
-  const storedEvents = getStoredEvents();
-  const eventMap = new Map();
+function getStorageBucket() {
+  return (window.ACREDITA_SUPABASE && window.ACREDITA_SUPABASE.storageBucket) || "event-videos";
+}
 
-  [...defaultEvents, ...storedEvents].forEach((eventItem) => {
-    eventMap.set(eventItem.id, eventItem);
-  });
+function getFallbackEvents() {
+  return Array.isArray(window.ACREDITA_EVENTS) ? window.ACREDITA_EVENTS : [];
+}
 
-  return [...eventMap.values()];
+async function fetchSupabaseEvents() {
+  const client = getSupabaseClient();
+
+  if (!client) {
+    return null;
+  }
+
+  const { data, error } = await client
+    .from("events")
+    .select(`
+      id,
+      title,
+      location,
+      event_date,
+      description,
+      cover_url,
+      event_videos (
+        title,
+        video_url,
+        description,
+        sort_order
+      ),
+      event_testimonials (
+        name,
+        role,
+        quote,
+        sort_order
+      )
+    `)
+    .eq("is_published", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data.map((eventItem) => ({
+    id: eventItem.id,
+    title: eventItem.title,
+    location: eventItem.location,
+    date: eventItem.event_date,
+    description: eventItem.description,
+    cover: eventItem.cover_url || "assets/img/video-thumb-01.svg",
+    videos: [...(eventItem.event_videos || [])]
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((video) => ({
+        title: video.title,
+        url: video.video_url,
+        description: video.description
+      })),
+    testimonials: [...(eventItem.event_testimonials || [])]
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((testimonial) => ({
+        name: testimonial.name,
+        role: testimonial.role,
+        quote: testimonial.quote
+      }))
+  }));
 }
 
 function normalizeVideoUrl(url) {
@@ -193,6 +258,20 @@ function normalizeVideoUrl(url) {
   return url;
 }
 
+function isEmbedUrl(url) {
+  return url.includes("youtube.com/embed") || url.includes("player.vimeo.com");
+}
+
+function renderVideoPlayer(video) {
+  const url = normalizeVideoUrl(video.url || "");
+
+  if (isEmbedUrl(url)) {
+    return `<iframe src="${escapeHtml(url)}" title="${escapeHtml(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+  }
+
+  return `<video src="${escapeHtml(url)}" controls preload="metadata"></video>`;
+}
+
 function escapeHtml(value) {
   return String(value || "")
     .replace(/&/g, "&amp;")
@@ -202,14 +281,7 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-function renderEventsPage() {
-  const eventStack = document.querySelector("#eventStack");
-  if (!eventStack) {
-    return;
-  }
-
-  const events = getAllEvents();
-
+function renderEventCards(events, eventStack) {
   if (!events.length) {
     eventStack.innerHTML = '<p class="empty-state">Nenhum evento cadastrado ainda.</p>';
     return;
@@ -220,7 +292,7 @@ function renderEventsPage() {
       ? eventItem.videos.map((video) => `
         <article class="video-card">
           <div class="video-frame">
-            <iframe src="${escapeHtml(normalizeVideoUrl(video.url))}" title="${escapeHtml(video.title)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            ${renderVideoPlayer(video)}
           </div>
           <h4>${escapeHtml(video.title)}</h4>
           <p>${escapeHtml(video.description)}</p>
@@ -262,12 +334,28 @@ function renderEventsPage() {
   }).join("");
 }
 
+async function renderEventsPage() {
+  const eventStack = document.querySelector("#eventStack");
+  if (!eventStack) {
+    return;
+  }
+
+  eventStack.innerHTML = '<p class="empty-state">Carregando eventos...</p>';
+
+  try {
+    const supabaseEvents = await fetchSupabaseEvents();
+    renderEventCards(supabaseEvents || getFallbackEvents(), eventStack);
+  } catch (error) {
+    renderEventCards(getFallbackEvents(), eventStack);
+  }
+}
+
 function createVideoField(video = {}) {
   const wrapper = document.createElement("div");
   wrapper.className = "field-group";
   wrapper.innerHTML = `
     <input data-video-title type="text" placeholder="Titulo do video" value="${escapeHtml(video.title)}">
-    <input data-video-url type="url" placeholder="Link do YouTube ou Vimeo" value="${escapeHtml(video.url)}">
+    <input data-video-file type="file" accept="video/mp4,video/webm,video/quicktime,video/*">
     <textarea data-video-description placeholder="Descricao curta">${escapeHtml(video.description)}</textarea>
     <button class="remove-button" type="button">Remover video</button>
   `;
@@ -288,27 +376,88 @@ function createTestimonialField(testimonial = {}) {
   return wrapper;
 }
 
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function getSafeFileName(fileName) {
+  const parts = fileName.split(".");
+  const extension = parts.length > 1 ? parts.pop().toLowerCase() : "mp4";
+  return `${slugify(parts.join(".")) || "video"}.${extension}`;
+}
+
+async function uploadVideoFile(file, eventSlug, videoTitle) {
+  const client = getSupabaseClient();
+  const path = `${eventSlug}/${Date.now()}-${slugify(videoTitle)}-${getSafeFileName(file.name)}`;
+
+  const { error } = await client.storage
+    .from(getStorageBucket())
+    .upload(path, file, {
+      cacheControl: "31536000",
+      upsert: false
+    });
+
+  if (error) {
+    throw error;
+  }
+
+  const { data } = client.storage.from(getStorageBucket()).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+async function isCurrentUserAdmin() {
+  const client = getSupabaseClient();
+  const { data: userData, error: userError } = await client.auth.getUser();
+
+  if (userError || !userData.user) {
+    return false;
+  }
+
+  const { data, error } = await client
+    .from("profiles")
+    .select("role")
+    .eq("id", userData.user.id)
+    .single();
+
+  if (error) {
+    return false;
+  }
+
+  return data.role === "admin";
+}
+
 function setupEventsAdmin() {
   const adminForm = document.querySelector("#eventAdminForm");
   if (!adminForm) {
     return;
   }
 
+  const client = getSupabaseClient();
+  const adminLoginSection = document.querySelector("#adminLoginSection");
+  const adminSection = document.querySelector("#eventAdminSection");
+  const adminLoginForm = document.querySelector("#adminLoginForm");
+  const adminEmail = document.querySelector("#adminEmail");
+  const adminPassword = document.querySelector("#adminPassword");
+  const adminLoginMessage = document.querySelector(".admin-login-message");
   const videoFields = document.querySelector("#videoFields");
   const testimonialFields = document.querySelector("#testimonialFields");
-  const output = document.querySelector("#eventsDataOutput");
   const savedEvents = document.querySelector("#savedEvents");
   const message = document.querySelector(".admin-message");
+  const submitButton = adminForm.querySelector('button[type="submit"]');
 
-  function updateOutput() {
-    const events = getAllEvents();
-    output.value = `window.ACREDITA_EVENTS = ${JSON.stringify(events, null, 2)};`;
-    savedEvents.innerHTML = events.map((eventItem) => `
-      <article>
-        <strong>${escapeHtml(eventItem.title)}</strong>
-        <span>${escapeHtml(eventItem.location)} | ${escapeHtml(eventItem.date)}</span>
-      </article>
-    `).join("");
+  function unlockAdmin() {
+    adminLoginSection.hidden = true;
+    adminSection.classList.remove("is-locked");
+  }
+
+  function lockAdmin() {
+    adminLoginSection.hidden = false;
+    adminSection.classList.add("is-locked");
   }
 
   function resetDynamicFields() {
@@ -317,6 +466,77 @@ function setupEventsAdmin() {
     videoFields.append(createVideoField());
     testimonialFields.append(createTestimonialField());
   }
+
+  async function refreshAdminEvents() {
+    if (!client) {
+      savedEvents.innerHTML = '<p class="empty-state">Configure o Supabase em assets/js/supabase-config.js.</p>';
+      return;
+    }
+
+    const { data, error } = await client
+      .from("events")
+      .select("title, location, event_date, created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      savedEvents.innerHTML = `<p class="empty-state">${escapeHtml(error.message)}</p>`;
+      return;
+    }
+
+    savedEvents.innerHTML = data.length
+      ? data.map((eventItem) => `
+        <article>
+          <strong>${escapeHtml(eventItem.title)}</strong>
+          <span>${escapeHtml(eventItem.location)} | ${escapeHtml(eventItem.event_date)}</span>
+        </article>
+      `).join("")
+      : '<p class="empty-state">Nenhum evento salvo no Supabase ainda.</p>';
+  }
+
+  if (!client) {
+    adminLoginMessage.textContent = "Configure URL e anon key do Supabase em assets/js/supabase-config.js.";
+  } else {
+    client.auth.getSession().then(async ({ data }) => {
+      if (data.session && await isCurrentUserAdmin()) {
+        unlockAdmin();
+        refreshAdminEvents();
+      }
+    });
+  }
+
+  adminLoginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!client) {
+      adminLoginMessage.textContent = "Supabase ainda nao configurado.";
+      return;
+    }
+
+    adminLoginMessage.textContent = "Validando acesso...";
+
+    const { error } = await client.auth.signInWithPassword({
+      email: adminEmail.value,
+      password: adminPassword.value
+    });
+
+    if (error) {
+      adminLoginMessage.textContent = "E-mail ou senha invalidos.";
+      adminPassword.value = "";
+      adminPassword.focus();
+      return;
+    }
+
+    if (!await isCurrentUserAdmin()) {
+      await client.auth.signOut();
+      adminLoginMessage.textContent = "Este usuario nao tem permissao de administrador.";
+      return;
+    }
+
+    adminLoginMessage.textContent = "";
+    adminPassword.value = "";
+    unlockAdmin();
+    refreshAdminEvents();
+  });
 
   document.querySelector("[data-add-video]").addEventListener("click", () => {
     videoFields.append(createVideoField());
@@ -332,60 +552,123 @@ function setupEventsAdmin() {
     message.textContent = "";
   });
 
-  document.querySelector("#copyEventsData").addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(output.value);
-      message.textContent = "Arquivo copiado. Cole o conteudo em assets/js/events-data.js para publicar.";
-    } catch (error) {
-      output.focus();
-      output.select();
-      message.textContent = "Nao foi possivel copiar automaticamente. O texto foi selecionado para copia manual.";
+  document.querySelector("#logoutAdmin").addEventListener("click", async () => {
+    if (client) {
+      await client.auth.signOut();
     }
+
+    lockAdmin();
+    adminEmail.value = "";
+    adminPassword.value = "";
+    adminEmail.focus();
   });
 
-  adminForm.addEventListener("submit", (event) => {
+  document.querySelector("#refreshAdminEvents").addEventListener("click", refreshAdminEvents);
+
+  adminForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    if (!client) {
+      message.textContent = "Supabase ainda nao configurado.";
+      return;
+    }
+
+    if (!await isCurrentUserAdmin()) {
+      message.textContent = "Sessao sem permissao de administrador.";
+      lockAdmin();
+      return;
+    }
 
     const formData = new FormData(adminForm);
     const title = formData.get("title").trim();
-    const location = formData.get("location").trim();
-    const date = formData.get("date").trim();
+    const eventSlug = slugify(`${title}-${formData.get("location")}-${formData.get("date")}`);
+    const videoGroups = [...videoFields.querySelectorAll(".field-group")];
+    const testimonialGroups = [...testimonialFields.querySelectorAll(".field-group")];
 
-    const videos = [...videoFields.querySelectorAll(".field-group")].map((group) => ({
-      title: group.querySelector("[data-video-title]").value.trim(),
-      url: normalizeVideoUrl(group.querySelector("[data-video-url]").value.trim()),
-      description: group.querySelector("[data-video-description]").value.trim()
-    })).filter((video) => video.title || video.url || video.description);
+    submitButton.disabled = true;
+    submitButton.textContent = "Salvando...";
+    message.textContent = "Enviando videos e salvando evento...";
 
-    const testimonials = [...testimonialFields.querySelectorAll(".field-group")].map((group) => ({
-      name: group.querySelector("[data-testimonial-name]").value.trim(),
-      role: group.querySelector("[data-testimonial-role]").value.trim(),
-      quote: group.querySelector("[data-testimonial-quote]").value.trim()
-    })).filter((testimonial) => testimonial.name || testimonial.role || testimonial.quote);
+    try {
+      const { data: userData } = await client.auth.getUser();
+      const { data: insertedEvent, error: eventError } = await client
+        .from("events")
+        .insert({
+          title,
+          location: formData.get("location").trim(),
+          event_date: formData.get("date").trim(),
+          description: formData.get("description").trim(),
+          cover_url: formData.get("cover").trim() || "assets/img/video-thumb-01.svg",
+          is_published: true,
+          created_by: userData.user.id
+        })
+        .select("id")
+        .single();
 
-    const eventItem = {
-      id: `${title}-${location}-${date}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-      title,
-      location,
-      date,
-      description: formData.get("description").trim(),
-      cover: formData.get("cover").trim() || "assets/img/video-thumb-01.svg",
-      videos,
-      testimonials
-    };
+      if (eventError) {
+        throw eventError;
+      }
 
-    const storedEvents = getStoredEvents().filter((item) => item.id !== eventItem.id);
-    storedEvents.push(eventItem);
-    localStorage.setItem("acreditaEvents", JSON.stringify(storedEvents));
+      const videos = [];
+      for (const [index, group] of videoGroups.entries()) {
+        const file = group.querySelector("[data-video-file]").files[0];
+        const videoTitle = group.querySelector("[data-video-title]").value.trim();
+        const description = group.querySelector("[data-video-description]").value.trim();
 
-    adminForm.reset();
-    resetDynamicFields();
-    updateOutput();
-    message.textContent = "Evento salvo neste navegador. Copie o arquivo gerado para publicar no site.";
+        if (!file && !videoTitle && !description) {
+          continue;
+        }
+
+        if (!file) {
+          throw new Error("Selecione o arquivo de todos os videos preenchidos.");
+        }
+
+        const videoUrl = await uploadVideoFile(file, eventSlug, videoTitle || `Video ${index + 1}`);
+        videos.push({
+          event_id: insertedEvent.id,
+          title: videoTitle || `Video ${index + 1}`,
+          video_url: videoUrl,
+          description,
+          sort_order: index
+        });
+      }
+
+      if (videos.length) {
+        const { error: videosError } = await client.from("event_videos").insert(videos);
+        if (videosError) {
+          throw videosError;
+        }
+      }
+
+      const testimonials = testimonialGroups.map((group, index) => ({
+        event_id: insertedEvent.id,
+        name: group.querySelector("[data-testimonial-name]").value.trim(),
+        role: group.querySelector("[data-testimonial-role]").value.trim(),
+        quote: group.querySelector("[data-testimonial-quote]").value.trim(),
+        sort_order: index
+      })).filter((testimonial) => testimonial.name || testimonial.role || testimonial.quote);
+
+      if (testimonials.length) {
+        const { error: testimonialsError } = await client.from("event_testimonials").insert(testimonials);
+        if (testimonialsError) {
+          throw testimonialsError;
+        }
+      }
+
+      adminForm.reset();
+      resetDynamicFields();
+      await refreshAdminEvents();
+      message.textContent = "Evento publicado com sucesso.";
+    } catch (error) {
+      message.textContent = error.message || "Nao foi possivel salvar o evento.";
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Salvar evento";
+    }
   });
 
   resetDynamicFields();
-  updateOutput();
+  refreshAdminEvents();
 }
 
 renderEventsPage();

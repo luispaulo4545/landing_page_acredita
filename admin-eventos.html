@@ -31,11 +31,23 @@
       <div class="container">
         <p class="section-label">Area de cadastro</p>
         <h1>Subir videos e criar eventos</h1>
-        <p>Cadastre edicoes, cole links de videos do YouTube ou Vimeo e adicione depoimentos. Depois copie o arquivo gerado para publicar no site.</p>
+        <p>Area restrita para administradores cadastrarem edicoes, arquivos de video e depoimentos dos eventos.</p>
       </div>
     </section>
 
-    <section class="event-admin">
+    <section class="admin-login-section" id="adminLoginSection">
+      <div class="container">
+        <form class="admin-login-card" id="adminLoginForm">
+          <p class="section-label">Acesso restrito</p>
+          <input id="adminEmail" type="email" placeholder="E-mail do administrador" autocomplete="username" required>
+          <input id="adminPassword" type="password" placeholder="Senha" autocomplete="current-password" required>
+          <button class="pill" type="submit">Entrar no ADM</button>
+          <p class="form-message admin-login-message" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="event-admin is-locked" id="eventAdminSection">
       <div class="container admin-grid">
         <form class="admin-form" id="eventAdminForm">
           <div class="admin-panel">
@@ -62,22 +74,25 @@
           <div class="admin-actions">
             <button class="pill" type="submit">Salvar evento</button>
             <button class="secondary-button" type="button" id="resetAdminForm">Limpar</button>
+            <button class="secondary-button" type="button" id="logoutAdmin">Sair do ADM</button>
           </div>
           <p class="form-message admin-message" role="status" aria-live="polite"></p>
         </form>
 
         <aside class="admin-preview">
           <div class="preview-head">
-            <p class="section-label">Dados gerados</p>
-            <button class="secondary-button" type="button" id="copyEventsData">Copiar</button>
+            <p class="section-label">Eventos salvos</p>
+            <button class="secondary-button" type="button" id="refreshAdminEvents">Atualizar</button>
           </div>
-          <textarea id="eventsDataOutput" readonly></textarea>
+          <p class="admin-note">Os videos enviados ficam no Supabase Storage e os dados do evento ficam no banco protegido por permissoes de administrador.</p>
           <div class="saved-events" id="savedEvents"></div>
         </aside>
       </div>
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
   <script src="assets/js/events-data.js"></script>
   <script src="assets/js/script.js?v=20260604-events"></script>
 </body>
