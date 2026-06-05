@@ -56,7 +56,12 @@
             <input name="title" type="text" placeholder="Nome do evento" required>
             <input name="location" type="text" placeholder="Cidade / Estado" required>
             <input name="date" type="text" placeholder="Data do evento" required>
-            <input name="cover" type="url" placeholder="Imagem de capa ou thumb (URL ou caminho)">
+            <input name="cover" type="hidden">
+            <label class="upload-control cover-upload-control">
+              <input id="coverFile" type="file" accept="image/jpeg,image/png,image/webp,image/*">
+              <span>Selecionar imagem de capa</span>
+            </label>
+            <small class="selected-file" id="selectedCoverFile">Nenhuma imagem selecionada</small>
             <textarea name="description" placeholder="Resumo do evento" required></textarea>
           </div>
 

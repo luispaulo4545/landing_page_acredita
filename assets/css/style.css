@@ -923,6 +923,12 @@ select {
   text-transform: uppercase;
 }
 
+.cover-upload-control {
+  background: transparent;
+  border: 1px solid rgba(176, 111, 85, .45);
+  color: var(--green-2);
+}
+
 .upload-control input {
   position: absolute;
   width: 1px;

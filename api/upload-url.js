@@ -10,11 +10,12 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const { eventSlug, fileName, videoTitle } = req.body || {};
+  const { eventSlug, fileName, videoTitle, type = "video" } = req.body || {};
   const safeEventSlug = slugify(eventSlug) || "evento";
   const safeVideoTitle = slugify(videoTitle) || "video";
   const safeFileName = getSafeFileName(fileName);
-  const path = `${safeEventSlug}/${Date.now()}-${safeVideoTitle}-${safeFileName}`;
+  const folder = type === "cover" ? "covers" : "videos";
+  const path = `${safeEventSlug}/${folder}/${Date.now()}-${safeVideoTitle}-${safeFileName}`;
   const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase.storage

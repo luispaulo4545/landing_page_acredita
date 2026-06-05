@@ -339,13 +339,14 @@ function slugify(value) {
     .replace(/(^-|-$)/g, "");
 }
 
-async function uploadVideoFile(file, eventSlug, videoTitle) {
+async function uploadSignedFile(file, eventSlug, title, type) {
   const config = window.ACREDITA_SUPABASE || {};
-  const maxVideoSizeMb = Number(config.maxVideoSizeMb || 50);
-  const maxVideoSizeBytes = maxVideoSizeMb * 1024 * 1024;
+  const maxSizeMb = type === "cover" ? Number(config.maxCoverSizeMb || 5) : Number(config.maxVideoSizeMb || 50);
+  const maxSizeBytes = maxSizeMb * 1024 * 1024;
 
-  if (file.size > maxVideoSizeBytes) {
-    throw new Error(`O video "${file.name}" tem ${(file.size / 1024 / 1024).toFixed(1)} MB. O limite atual e ${maxVideoSizeMb} MB.`);
+  if (file.size > maxSizeBytes) {
+    const label = type === "cover" ? "imagem" : "video";
+    throw new Error(`A ${label} "${file.name}" tem ${(file.size / 1024 / 1024).toFixed(1)} MB. O limite atual e ${maxSizeMb} MB.`);
   }
 
   const uploadData = await requestJson("/api/upload-url", {
@@ -353,7 +354,8 @@ async function uploadVideoFile(file, eventSlug, videoTitle) {
     body: JSON.stringify({
       eventSlug,
       fileName: file.name,
-      videoTitle
+      videoTitle: title,
+      type
     })
   });
 
@@ -375,6 +377,14 @@ async function uploadVideoFile(file, eventSlug, videoTitle) {
   return `${config.url}/storage/v1/object/public/${uploadData.bucket}/${uploadData.path}`;
 }
 
+async function uploadVideoFile(file, eventSlug, videoTitle) {
+  return uploadSignedFile(file, eventSlug, videoTitle, "video");
+}
+
+async function uploadCoverFile(file, eventSlug, title) {
+  return uploadSignedFile(file, eventSlug, title, "cover");
+}
+
 function setupEventsAdmin() {
   const adminForm = document.querySelector("#eventAdminForm");
   if (!adminForm) {
@@ -393,7 +403,14 @@ function setupEventsAdmin() {
   const message = document.querySelector(".admin-message");
   const submitButton = adminForm.querySelector('button[type="submit"]');
   const cancelEditButton = document.querySelector("#cancelEditEvent");
+  const coverFileInput = document.querySelector("#coverFile");
+  const selectedCoverFile = document.querySelector("#selectedCoverFile");
   let adminEvents = [];
+
+  coverFileInput.addEventListener("change", () => {
+    const file = coverFileInput.files[0];
+    selectedCoverFile.textContent = file ? file.name : "Nenhuma imagem selecionada";
+  });
 
   function unlockAdmin() {
     adminLoginSection.hidden = true;
@@ -417,6 +434,8 @@ function setupEventsAdmin() {
   function resetAdminState() {
     adminForm.reset();
     document.querySelector("#eventId").value = "";
+    adminForm.elements.cover.value = "";
+    selectedCoverFile.textContent = "Nenhuma imagem selecionada";
     cancelEditButton.hidden = true;
     submitButton.textContent = "Salvar evento";
     resetDynamicFields();
@@ -429,6 +448,7 @@ function setupEventsAdmin() {
     adminForm.elements.date.value = eventItem.date || "";
     adminForm.elements.cover.value = eventItem.cover || "";
     adminForm.elements.description.value = eventItem.description || "";
+    selectedCoverFile.textContent = eventItem.cover ? "Imagem atual mantida" : "Nenhuma imagem selecionada";
 
     videoFields.innerHTML = "";
     (eventItem.videos && eventItem.videos.length ? eventItem.videos : [{}]).forEach((video) => {
@@ -557,6 +577,13 @@ function setupEventsAdmin() {
 
     try {
       const videos = [];
+      let coverUrl = formData.get("cover").trim();
+      const coverFile = coverFileInput.files[0];
+      if (coverFile) {
+        message.textContent = "Enviando imagem de capa...";
+        coverUrl = await uploadCoverFile(coverFile, eventSlug, title);
+      }
+
       for (const [index, group] of videoGroups.entries()) {
         const file = group.querySelector("[data-video-file]").files[0];
         const videoTitle = group.querySelector("[data-video-title]").value.trim();
@@ -600,7 +627,7 @@ function setupEventsAdmin() {
             location: formData.get("location").trim(),
             date: formData.get("date").trim(),
             description: formData.get("description").trim(),
-            cover: formData.get("cover").trim() || "assets/img/video-thumb-01.svg"
+            cover: coverUrl || "assets/img/video-thumb-01.svg"
           },
           videos,
           testimonials
