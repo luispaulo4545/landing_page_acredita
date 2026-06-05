@@ -298,13 +298,14 @@ async function renderEventsPage() {
 function createVideoField(video = {}) {
   const wrapper = document.createElement("div");
   wrapper.className = "field-group";
+  wrapper.dataset.existingUrl = video.url || "";
   wrapper.innerHTML = `
     <input data-video-title type="text" placeholder="Titulo do video" value="${escapeHtml(video.title)}">
     <label class="upload-control">
       <input data-video-file type="file" accept="video/mp4,video/webm,video/quicktime,video/*">
       <span>Selecionar video do computador</span>
     </label>
-    <small class="selected-file" data-selected-file>Nenhum arquivo selecionado</small>
+    <small class="selected-file" data-selected-file>${video.url ? "Video atual mantido" : "Nenhum arquivo selecionado"}</small>
     <textarea data-video-description placeholder="Descricao curta">${escapeHtml(video.description)}</textarea>
     <button class="remove-button" type="button">Remover video</button>
   `;
@@ -391,6 +392,8 @@ function setupEventsAdmin() {
   const savedEvents = document.querySelector("#savedEvents");
   const message = document.querySelector(".admin-message");
   const submitButton = adminForm.querySelector('button[type="submit"]');
+  const cancelEditButton = document.querySelector("#cancelEditEvent");
+  let adminEvents = [];
 
   function unlockAdmin() {
     adminLoginSection.hidden = true;
@@ -411,14 +414,47 @@ function setupEventsAdmin() {
     testimonialFields.append(createTestimonialField());
   }
 
+  function resetAdminState() {
+    adminForm.reset();
+    document.querySelector("#eventId").value = "";
+    cancelEditButton.hidden = true;
+    submitButton.textContent = "Salvar evento";
+    resetDynamicFields();
+  }
+
+  function loadEventForEdit(eventItem) {
+    document.querySelector("#eventId").value = eventItem.id;
+    adminForm.elements.title.value = eventItem.title || "";
+    adminForm.elements.location.value = eventItem.location || "";
+    adminForm.elements.date.value = eventItem.date || "";
+    adminForm.elements.cover.value = eventItem.cover || "";
+    adminForm.elements.description.value = eventItem.description || "";
+
+    videoFields.innerHTML = "";
+    (eventItem.videos && eventItem.videos.length ? eventItem.videos : [{}]).forEach((video) => {
+      videoFields.append(createVideoField(video));
+    });
+
+    testimonialFields.innerHTML = "";
+    (eventItem.testimonials && eventItem.testimonials.length ? eventItem.testimonials : [{}]).forEach((testimonial) => {
+      testimonialFields.append(createTestimonialField(testimonial));
+    });
+
+    cancelEditButton.hidden = false;
+    submitButton.textContent = "Atualizar evento";
+    message.textContent = "Editando evento existente.";
+    adminForm.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   async function refreshAdminEvents() {
     try {
-      const events = await fetchApiEvents();
-      savedEvents.innerHTML = events.length
-        ? events.map((eventItem) => `
+      adminEvents = await fetchApiEvents();
+      savedEvents.innerHTML = adminEvents.length
+        ? adminEvents.map((eventItem) => `
           <article>
             <strong>${escapeHtml(eventItem.title)}</strong>
             <span>${escapeHtml(eventItem.location)} | ${escapeHtml(eventItem.date)}</span>
+            <button class="secondary-button edit-event-button" type="button" data-edit-event="${escapeHtml(eventItem.id)}">Editar</button>
           </article>
         `).join("")
         : '<p class="empty-state">Nenhum evento salvo ainda.</p>';
@@ -470,9 +506,25 @@ function setupEventsAdmin() {
   });
 
   document.querySelector("#resetAdminForm").addEventListener("click", () => {
-    adminForm.reset();
-    resetDynamicFields();
+    resetAdminState();
     message.textContent = "";
+  });
+
+  cancelEditButton.addEventListener("click", () => {
+    resetAdminState();
+    message.textContent = "";
+  });
+
+  savedEvents.addEventListener("click", (event) => {
+    const editButton = event.target.closest("[data-edit-event]");
+    if (!editButton) {
+      return;
+    }
+
+    const eventItem = adminEvents.find((item) => item.id === editButton.dataset.editEvent);
+    if (eventItem) {
+      loadEventForEdit(eventItem);
+    }
   });
 
   document.querySelector("#logoutAdmin").addEventListener("click", async () => {
@@ -493,6 +545,7 @@ function setupEventsAdmin() {
     event.preventDefault();
 
     const formData = new FormData(adminForm);
+    const eventId = formData.get("eventId");
     const title = formData.get("title").trim();
     const eventSlug = slugify(`${title}-${formData.get("location")}-${formData.get("date")}`);
     const videoGroups = [...videoFields.querySelectorAll(".field-group")];
@@ -513,12 +566,17 @@ function setupEventsAdmin() {
           continue;
         }
 
-        if (!file) {
+        const existingUrl = group.dataset.existingUrl || "";
+        if (!file && !existingUrl) {
           throw new Error("Selecione o arquivo de todos os videos preenchidos.");
         }
 
-        message.textContent = `Enviando video ${index + 1}...`;
-        const videoUrl = await uploadVideoFile(file, eventSlug, videoTitle || `Video ${index + 1}`);
+        let videoUrl = existingUrl;
+        if (file) {
+          message.textContent = `Enviando video ${index + 1}...`;
+          videoUrl = await uploadVideoFile(file, eventSlug, videoTitle || `Video ${index + 1}`);
+        }
+
         videos.push({
           title: videoTitle || `Video ${index + 1}`,
           url: videoUrl,
@@ -533,9 +591,10 @@ function setupEventsAdmin() {
       })).filter((testimonial) => testimonial.name || testimonial.role || testimonial.quote);
 
       message.textContent = "Publicando evento...";
-      await requestJson("/api/events-create", {
+      await requestJson(eventId ? "/api/events-update" : "/api/events-create", {
         method: "POST",
         body: JSON.stringify({
+          id: eventId || undefined,
           event: {
             title,
             location: formData.get("location").trim(),
@@ -548,10 +607,9 @@ function setupEventsAdmin() {
         })
       });
 
-      adminForm.reset();
-      resetDynamicFields();
+      resetAdminState();
       await refreshAdminEvents();
-      message.textContent = "Evento publicado com sucesso.";
+      message.textContent = eventId ? "Evento atualizado com sucesso." : "Evento publicado com sucesso.";
     } catch (error) {
       message.textContent = error.message || "Nao foi possivel salvar o evento.";
     } finally {

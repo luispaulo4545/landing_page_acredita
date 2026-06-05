@@ -1020,6 +1020,12 @@ select {
   font-size: 12px;
 }
 
+.saved-events .edit-event-button {
+  justify-self: start;
+  min-height: 28px;
+  margin-top: 6px;
+}
+
 .saved-events span {
   color: #b06f55;
   font-size: 11px;

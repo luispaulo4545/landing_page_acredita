@@ -50,6 +50,7 @@
     <section class="event-admin is-locked" id="eventAdminSection" hidden>
       <div class="container admin-grid">
         <form class="admin-form" id="eventAdminForm">
+          <input type="hidden" name="eventId" id="eventId">
           <div class="admin-panel">
             <p class="section-label">Evento</p>
             <input name="title" type="text" placeholder="Nome do evento" required>
@@ -74,6 +75,7 @@
 
           <div class="admin-actions">
             <button class="pill" type="submit">Salvar evento</button>
+            <button class="secondary-button" type="button" id="cancelEditEvent" hidden>Cancelar edicao</button>
             <button class="secondary-button" type="button" id="resetAdminForm">Limpar</button>
             <button class="secondary-button" type="button" id="logoutAdmin">Sair do ADM</button>
           </div>
