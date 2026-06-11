@@ -433,7 +433,8 @@ select {
 
 .partners-grid {
   display: grid;
-  grid-template-columns: 220px 301px;
+  grid-template-columns: 42.23% 57.77%;
+  width: min(100%, 521px);
   gap: 0;
   align-items: start;
 }
@@ -466,12 +467,13 @@ select {
 }
 
 .partner-strip-isha {
-  aspect-ratio: 301 / 109;
+  aspect-ratio: 301 / 98;
 }
 
 .partner-strip-isha img {
   width: 293.69%;
   left: -73.42%;
+  transform: translateY(-10.1%);
 }
 
 .signup {
@@ -1216,23 +1218,6 @@ select {
 @media (max-width: 560px) {
   .container {
     width: min(100% - 28px, 884px);
-  }
-
-  .partners-grid {
-    grid-template-columns: 1fr;
-    gap: 22px;
-  }
-
-  .partner-block {
-    width: min(100%, 301px);
-  }
-
-  .partner-block:first-child {
-    width: min(100%, 220px);
-  }
-
-  .partner-block + .partner-block {
-    border-left: 0;
   }
 
   .workshop-logo {
