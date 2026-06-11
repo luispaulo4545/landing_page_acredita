@@ -431,17 +431,47 @@ select {
   margin-bottom: 8px;
 }
 
-.partners-image-crop {
-  width: 59%;
-  max-width: 522px;
+.partners-grid {
+  display: grid;
+  grid-template-columns: 220px 301px;
+  gap: 0;
+  align-items: start;
+}
+
+.partner-block + .partner-block {
+  border-left: 1px solid #d2b9aa;
+}
+
+.partner-strip-crop {
+  position: relative;
+  width: 100%;
   overflow: hidden;
 }
 
-.partners-image {
+.partner-strip-crop img {
+  position: absolute;
+  top: 0;
   display: block;
-  width: 169.5%;
   max-width: none;
   height: auto;
+}
+
+.partner-strip-acredita {
+  aspect-ratio: 220 / 109;
+}
+
+.partner-strip-acredita img {
+  width: 401.82%;
+  left: 0;
+}
+
+.partner-strip-isha {
+  aspect-ratio: 301 / 109;
+}
+
+.partner-strip-isha img {
+  width: 293.69%;
+  left: -73.42%;
 }
 
 .signup {
@@ -1188,8 +1218,21 @@ select {
     width: min(100% - 28px, 884px);
   }
 
-  .partners-image-crop {
-    width: 100%;
+  .partners-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .partner-block {
+    width: min(100%, 301px);
+  }
+
+  .partner-block:first-child {
+    width: min(100%, 220px);
+  }
+
+  .partner-block + .partner-block {
+    border-left: 0;
   }
 
   .workshop-logo {
