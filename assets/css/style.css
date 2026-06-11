@@ -432,13 +432,15 @@ select {
 }
 
 .partners-image-crop {
-  width: 59.2%;
+  width: 59%;
+  max-width: 522px;
   overflow: hidden;
 }
 
 .partners-image {
   display: block;
-  width: 168.92%;
+  width: 169.5%;
+  max-width: none;
   height: auto;
 }
 
