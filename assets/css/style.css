@@ -431,9 +431,25 @@ select {
   margin-bottom: 8px;
 }
 
-.partners-image {
-  width: 100%;
-  height: auto;
+.partners-logos {
+  display: flex;
+  align-items: center;
+  gap: 54px;
+  padding: 14px 0 18px;
+}
+
+.partner-logo {
+  display: block;
+  width: auto;
+  object-fit: contain;
+}
+
+.partner-logo-acredita {
+  height: 105px;
+}
+
+.partner-logo-isha {
+  height: 150px;
 }
 
 .signup {
@@ -1143,9 +1159,19 @@ select {
     grid-template-columns: 1fr;
   }
 
-  .partners-image {
-    min-height: 220px;
-    object-fit: contain;
+  .partners-logos {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 28px;
+  }
+
+  .partner-logo-acredita {
+    height: 95px;
+  }
+
+  .partner-logo-isha {
+    width: min(100%, 430px);
+    height: auto;
   }
 
   .copy {
