@@ -443,6 +443,10 @@ select {
   border-left: 1px solid #d2b9aa;
 }
 
+.partner-block + .partner-block .section-label {
+  padding-left: 24px;
+}
+
 .partner-strip-crop {
   position: relative;
   width: 100%;
