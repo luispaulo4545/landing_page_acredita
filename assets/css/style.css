@@ -431,35 +431,15 @@ select {
   margin-bottom: 8px;
 }
 
-.partners-logos {
-  display: flex;
-  align-items: center;
-  gap: 64px;
-  padding: 18px 0 22px;
-}
-
-.partner-logo {
-  display: block;
-}
-
-.partner-logo-acredita {
-  width: 132px;
-  height: auto;
-  flex: 0 0 auto;
-}
-
-.partner-logo-isha-frame {
-  width: min(360px, calc(100% - 196px));
-  aspect-ratio: 2.3;
+.partners-image-crop {
+  width: 59.2%;
   overflow: hidden;
-  flex: 0 1 360px;
 }
 
-.partner-logo-isha {
-  width: 100%;
+.partners-image {
+  display: block;
+  width: 168.92%;
   height: auto;
-  transform: translateY(-24%);
-  mix-blend-mode: multiply;
 }
 
 .signup {
@@ -1206,15 +1186,8 @@ select {
     width: min(100% - 28px, 884px);
   }
 
-  .partners-logos {
-    flex-direction: column;
-    gap: 24px;
-    padding: 20px 0 24px;
-  }
-
-  .partner-logo-isha-frame {
-    width: min(100%, 340px);
-    flex-basis: auto;
+  .partners-image-crop {
+    width: 100%;
   }
 
   .workshop-logo {
