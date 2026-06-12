@@ -555,6 +555,7 @@ select {
 }
 
 .form-button,
+.payment-button,
 .form-message {
   grid-column: 1 / -1;
 }
@@ -564,6 +565,20 @@ select {
   height: 31px;
   min-height: 31px;
   margin-top: 2px;
+}
+
+.payment-button {
+  width: 100%;
+  min-height: 36px;
+  margin-top: 3px;
+  color: var(--white);
+  background: transparent;
+  border: 1px solid #e5a17f;
+}
+
+.payment-button:hover {
+  color: #111512;
+  background: #e5a17f;
 }
 
 .form-message {
