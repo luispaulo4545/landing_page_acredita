@@ -116,7 +116,7 @@ if (form) {
     const button = form.querySelector(".form-button");
 
     if (!isValid) {
-      message.textContent = "Revise os campos destacados para concluir sua pre-inscricao.";
+      message.textContent = "Revise os campos destacados para solicitar mais informacoes.";
       return;
     }
 
@@ -139,14 +139,14 @@ if (form) {
         body: getEncodedFormData()
       });
 
-      message.textContent = "Pre-inscricao registrada com sucesso! Em breve entraremos em contato.";
+      message.textContent = "Solicitacao registrada com sucesso! Em breve entraremos em contato.";
       form.reset();
       fields.forEach((field) => field.classList.remove("invalid"));
     } catch (error) {
-      message.textContent = "Nao foi possivel registrar sua pre-inscricao. Tente novamente em instantes.";
+      message.textContent = "Nao foi possivel registrar sua solicitacao. Tente novamente em instantes.";
     } finally {
       button.disabled = false;
-      button.textContent = "Quero receber as informacoes";
+      button.textContent = "Quero receber mais informacoes";
     }
   });
 }

@@ -514,6 +514,30 @@ select {
   line-height: 1.15;
 }
 
+.signup-actions {
+  align-self: start;
+}
+
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 9px;
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.form-divider::before,
+.form-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: rgba(229, 161, 127, .55);
+}
+
 .form {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -555,7 +579,6 @@ select {
 }
 
 .form-button,
-.payment-button,
 .form-message {
   grid-column: 1 / -1;
 }
@@ -565,20 +588,25 @@ select {
   height: 31px;
   min-height: 31px;
   margin-top: 2px;
-}
-
-.payment-button {
-  width: 100%;
-  min-height: 36px;
-  margin-top: 3px;
   color: var(--white);
   background: transparent;
   border: 1px solid #e5a17f;
 }
 
-.payment-button:hover {
+.form-button:hover {
   color: #111512;
   background: #e5a17f;
+}
+
+.payment-button {
+  width: 100%;
+  min-height: 36px;
+  color: #111512;
+  background: #e5a17f;
+}
+
+.payment-button:hover {
+  background: #f1b58f;
 }
 
 .form-message {
