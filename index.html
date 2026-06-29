@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Workshop de Nefrologia & Hemodiálise | Acredita Gestão</title>
-  <meta name="description" content="Pré-inscrição para o Workshop de Nefrologia & Hemodiálise. Salvador e Petrolina.">
+  <meta name="description" content="Inscrições e informações sobre o Workshop de Nefrologia & Hemodiálise. Salvador e Petrolina.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,11 +26,11 @@
       <a href="#programacao">Programação</a>
       <a href="#locais">Locais</a>
       <a href="#parceiros">Parceiros</a>
-      <a href="#eventos">Eventos</a>
+      <a href="eventos.html">Eventos</a>
       <a href="#contato">Contato</a>
     </nav>
 
-    <a class="pill header-pill" href="#pre-inscricao">Pré-inscrição</a>
+    <a class="pill header-pill" href="https://www.even3.com.br/workshop-nefrologia-e-hemodialise-fundamentos-para-a-pratica-segura-750311/" target="_blank" rel="noopener">Inscreva-se</a>
   </header>
 
   <main>
@@ -57,7 +57,7 @@
           </div>
         </div>
 
-        <a class="pill hero-pill" href="#pre-inscricao">Quero fazer minha pré-inscrição <span>→</span></a>
+        <a class="pill hero-pill" href="https://www.even3.com.br/workshop-nefrologia-e-hemodialise-fundamentos-para-a-pratica-segura-750311/" target="_blank" rel="noopener">Fazer inscrição <span>→</span></a>
       </div>
     </section>
 
@@ -112,17 +112,28 @@
 
     <section class="partners" id="parceiros">
       <div class="container">
-        <p class="section-label">Realização e parcerias</p>
-        <!-- Recorte temporário da referência. Troque por logos oficiais quando enviados. -->
-        <img class="partners-image" src="assets/img/ref-partners-strip.png" alt="Acredita Gestão, ISHA, Sociedade Brasileira de Nefrologia, SOBEN e AMB">
+        <div class="partners-grid">
+          <div class="partner-block">
+            <p class="section-label">Realização</p>
+            <div class="partner-strip-crop partner-strip-acredita">
+              <img src="assets/img/ref-partners-strip.png" alt="Acredita Gestão">
+            </div>
+          </div>
+          <div class="partner-block">
+            <p class="section-label">Parcerias</p>
+            <div class="partner-strip-crop partner-strip-isha">
+              <img src="assets/img/ref-partners-strip.png" alt="ISHA - Instrumento Simulador de Hemodiálise Avançado">
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="signup" id="pre-inscricao">
       <div class="container signup-grid">
         <div class="signup-copy">
-          <p class="section-label">Pré-inscrições abertas</p>
-          <h2>Garanta seu interesse e receba em primeira mão todas as informações do evento.</h2>
+          <p class="section-label">Inscrições abertas</p>
+          <h2>Garanta sua vaga no Workshop de Nefrologia & Hemodiálise.</h2>
           <div class="benefits">
             <span><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 3v4M16 3v4M4 10h16"/></svg>Programação<br>completa</span>
             <span><svg viewBox="0 0 24 24"><path d="M8 11a4 4 0 1 0 0-8M16 11a4 4 0 1 0 0-8M3 21a6 6 0 0 1 10 0M11 21a6 6 0 0 1 10 0"/></svg>Palestrantes<br>confirmados</span>
@@ -130,29 +141,33 @@
           </div>
         </div>
 
-        <form class="form" id="registrationForm" novalidate>
-          <input name="name" type="text" placeholder="Nome completo" required>
-          <input name="profession" type="text" placeholder="Profissão" required>
-          <input name="institution" type="text" placeholder="Instituição" required>
-          <input name="city" type="text" placeholder="Cidade / Estado" required>
-          <input id="whatsapp" name="whatsapp" type="tel" placeholder="WhatsApp (  ) _____-____" required>
-          <input name="email" type="email" placeholder="E-mail" required>
-          <select name="area" required>
-            <option value="">Área de atuação</option>
-            <option>Medicina</option>
-            <option>Enfermagem</option>
-            <option>Gestão em saúde</option>
-            <option>Qualidade e segurança</option>
-          </select>
-          <select name="interest" required>
-            <option value="">Interesse</option>
-            <option>Salvador • BA</option>
-            <option>Petrolina • PE</option>
-            <option>Ambas as cidades</option>
-          </select>
-          <button class="pill form-button" type="submit">Quero receber as informações</button>
-          <p class="form-message" role="status" aria-live="polite"></p>
-        </form>
+        <div class="signup-actions">
+          <a class="pill payment-button" href="https://www.even3.com.br/workshop-nefrologia-e-hemodialise-fundamentos-para-a-pratica-segura-750311/" target="_blank" rel="noopener">Fazer inscrição</a>
+          <p class="form-divider"><span>Ainda tem dúvidas?</span></p>
+          <form class="form" id="registrationForm" novalidate>
+            <input name="name" type="text" placeholder="Nome completo" required>
+            <input name="profession" type="text" placeholder="Profissão" required>
+            <input name="institution" type="text" placeholder="Instituição" required>
+            <input name="city" type="text" placeholder="Cidade / Estado" required>
+            <input id="whatsapp" name="whatsapp" type="tel" placeholder="WhatsApp (  ) _____-____" required>
+            <input name="email" type="email" placeholder="E-mail" required>
+            <select name="area" required>
+              <option value="">Área de atuação</option>
+              <option>Medicina</option>
+              <option>Enfermagem</option>
+              <option>Gestão em saúde</option>
+              <option>Qualidade e segurança</option>
+            </select>
+            <select name="interest" required>
+              <option value="">Interesse</option>
+              <option>Salvador • BA</option>
+              <option>Petrolina • PE</option>
+              <option>Ambas as cidades</option>
+            </select>
+            <button class="pill form-button" type="submit">Quero receber mais informações</button>
+            <p class="form-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
       </div>
     </section>
   </main>
@@ -179,7 +194,8 @@
       <nav class="footer-col" aria-label="Parceiros">
         <strong>Parceiros</strong>
         <a href="#parceiros">Parceiros</a>
-        <a href="#eventos">Eventos</a>
+        <a href="eventos.html">Eventos</a>
+        <a href="admin-eventos.html">ADM</a>
         <a href="#contato">Contato</a>
       </nav>
       <div class="footer-col">
@@ -194,6 +210,6 @@
     </div>
   </footer>
 
-  <script src="assets/js/script.js?v=20260603-2"></script>
+  <script src="assets/js/script.js?v=20260604-events"></script>
 </body>
 </html>
