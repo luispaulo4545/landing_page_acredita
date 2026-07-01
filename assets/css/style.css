@@ -222,8 +222,19 @@ select {
   background: rgba(229, 161, 127, .52);
 }
 
+.hero-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: min(700px, 100%);
+}
+
 .hero-pill {
-  min-width: 344px;
+  width: 100%;
+  min-width: 0;
+  padding-inline: 18px;
+  text-align: center;
+  line-height: 1.2;
 }
 
 .hero-pill span {
@@ -1279,6 +1290,11 @@ select {
   }
 
   .payment-buttons {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .hero-buttons {
     grid-template-columns: 1fr;
     gap: 10px;
   }
