@@ -491,6 +491,26 @@ select {
   transform: translateY(-10.1%);
 }
 
+.support-block {
+  width: min(100%, 521px);
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #d2b9aa;
+}
+
+.support-logo {
+  width: min(100%, 380px);
+  aspect-ratio: 3.6 / 1;
+  overflow: hidden;
+}
+
+.support-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 .signup {
   padding: 17px 0 10px;
   color: var(--white);
