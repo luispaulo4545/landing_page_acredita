@@ -652,6 +652,10 @@ select {
   background: #f1b58f;
 }
 
+.minicourse-button {
+  grid-column: 1 / -1;
+}
+
 .form-message {
   min-height: 16px;
   margin: 0;
