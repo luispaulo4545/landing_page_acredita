@@ -444,8 +444,8 @@ select {
 
 .partners-grid {
   display: grid;
-  grid-template-columns: 42.23% 57.77%;
-  width: min(100%, 521px);
+  grid-template-columns: 32% 68%;
+  width: min(100%, 680px);
   gap: 0;
   align-items: start;
 }
@@ -489,6 +489,32 @@ select {
   width: 293.69%;
   left: -73.42%;
   transform: translateY(-10.1%);
+}
+
+.partner-logo-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(86px, .75fr);
+  align-items: center;
+  gap: 18px;
+  padding-left: 24px;
+}
+
+.partner-logo-list .partner-strip-isha {
+  width: 100%;
+}
+
+.partner-logo-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.partner-logo-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .support-block {
@@ -1308,6 +1334,27 @@ select {
 @media (max-width: 560px) {
   .container {
     width: min(100% - 28px, 884px);
+  }
+
+  .partners-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .partner-block + .partner-block {
+    padding-top: 16px;
+    border-top: 1px solid #d2b9aa;
+    border-left: 0;
+  }
+
+  .partner-block + .partner-block .section-label,
+  .partner-logo-list {
+    padding-left: 0;
+  }
+
+  .partner-logo-list {
+    grid-template-columns: minmax(0, 1fr) 104px;
   }
 
   .payment-buttons {
