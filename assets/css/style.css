@@ -518,21 +518,21 @@ select {
 }
 
 .support-block {
-  width: min(100%, 470px);
+  width: min(100%, 300px);
   margin-top: 18px;
   padding-top: 16px;
   border-top: 1px solid #d2b9aa;
 }
 
 .support-logo-list {
-  display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(86px, .7fr);
-  align-items: center;
-  gap: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
 }
 
 .support-logo {
-  width: 100%;
+  width: min(100%, 280px);
   aspect-ratio: 4 / 1;
   overflow: hidden;
 }
@@ -546,7 +546,9 @@ select {
 }
 
 .support-logo-soben {
+  width: 180px;
   aspect-ratio: 1 / 1;
+  overflow: visible;
 }
 
 .support-logo-soben img {
