@@ -224,7 +224,7 @@ select {
 
 .hero-buttons {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   width: min(860px, 100%);
 }
@@ -401,6 +401,72 @@ select {
   gap: 30px;
   margin-top: 27px;
   padding: 0 0 4px;
+}
+
+.immersions {
+  padding: 42px 0;
+  background: #f4f1eb;
+}
+
+.immersions-grid {
+  display: grid;
+  grid-template-columns: 1.25fr .9fr auto;
+  align-items: center;
+  gap: 34px;
+}
+
+.immersions h2 {
+  margin: 0 0 9px;
+  color: var(--green-2);
+  font-family: var(--serif);
+  font-size: 42px;
+  line-height: 1;
+}
+
+.immersions p:not(.section-label) {
+  max-width: 390px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.immersion-dates {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.immersion-dates div {
+  min-width: 96px;
+  padding-left: 13px;
+  border-left: 2px solid var(--peach);
+}
+
+.immersion-dates strong,
+.immersion-dates span {
+  display: block;
+}
+
+.immersion-dates strong {
+  color: var(--green-2);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.immersion-dates span {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.immersion-button {
+  white-space: nowrap;
+}
+
+.immersion-button span {
+  margin-left: 12px;
+  font-size: 16px;
 }
 
 .program-intro {
@@ -1444,6 +1510,15 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .immersions-grid {
+    grid-template-columns: 1fr auto;
+  }
+
+  .immersion-button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
   .hero-meta {
     display: grid;
     gap: 18px;
@@ -1539,6 +1614,20 @@ select {
   .payment-buttons {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  .immersions-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .immersions h2 {
+    font-size: 36px;
+  }
+
+  .immersion-button {
+    grid-column: auto;
+    width: 100%;
   }
 
   .hero-buttons {
