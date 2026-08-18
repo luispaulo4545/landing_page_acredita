@@ -399,6 +399,56 @@ select {
   margin-top: 19px;
 }
 
+.program-intro {
+  margin: -2px 0 16px;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 25px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.program-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+.program-period {
+  padding: 18px 20px 16px;
+  border: 1px solid rgba(229, 161, 127, .48);
+  background: rgba(255, 255, 255, .36);
+}
+
+.program-period h3 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: .055em;
+  text-transform: uppercase;
+}
+
+.program-period h3 span {
+  color: var(--peach);
+  padding: 0 3px;
+}
+
+.program-period ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.program-period li {
+  padding-left: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.program-period li + li {
+  margin-top: 11px;
+}
+
 .topic-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -1309,6 +1359,10 @@ select {
     gap: 12px 0;
   }
 
+  .program-grid {
+    grid-template-columns: 1fr;
+  }
+
   .topic-grid article:nth-child(2n) {
     border-right: 0;
   }
@@ -1451,6 +1505,14 @@ select {
     border-right: 0;
     border-bottom: 1px solid rgba(229, 161, 127, .28);
     padding: 18px 0;
+  }
+
+  .program-period {
+    padding: 16px;
+  }
+
+  .program-intro {
+    font-size: 23px;
   }
 
   .events-hero {
