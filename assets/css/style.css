@@ -403,9 +403,163 @@ select {
   padding: 0 0 4px;
 }
 
+.city-program-salvador {
+  margin-top: 70px;
+  padding-top: 70px;
+  border-top: 1px solid rgba(34, 89, 74, .18);
+}
+
+.mini-course-program {
+  grid-column: 2;
+  grid-row: 1;
+  margin-top: 0;
+  padding-bottom: 34px;
+  border-bottom: 1px solid rgba(255, 250, 244, .24);
+}
+
+.mini-course-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.mini-course-heading h3 {
+  margin: 0;
+  color: rgba(255, 250, 244, .88);
+  font-family: var(--serif);
+  font-size: 26px;
+}
+
+.mini-course-grid {
+  grid-template-columns: 1fr;
+  margin-top: 0;
+}
+
+.mini-course-card {
+  min-height: 0;
+}
+
+.mini-course-card p:not(.period-label) {
+  margin: 0 0 22px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.mini-course-card a {
+  color: var(--green-2);
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mini-course-card a span {
+  margin-left: 6px;
+}
+
+.management-course-card {
+  background: #f2b29a;
+}
+
+.topics > .program-overview {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.topics > .program-grid {
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 34px;
+}
+
+/* Mantém os minicursos e o Workshop como programações independentes. */
+.workshop-program .topics {
+  display: flex;
+  flex-direction: column;
+}
+
+.workshop-program .mini-course-program {
+  order: 0;
+  width: 100%;
+}
+
+.workshop-program .program-overview {
+  order: 1;
+  width: 100%;
+  max-width: none;
+  margin-top: 42px;
+}
+
+.workshop-program .program-grid {
+  order: 2;
+  width: 100%;
+  margin-top: 28px;
+}
+
+.workshop-program .workshop-program-heading {
+  order: 2;
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 0;
+}
+
+.workshop-program .program-grid {
+  order: 3;
+}
+
 .immersions {
   padding: 42px 0;
   background: #f4f1eb;
+}
+
+.city-editions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 18px;
+}
+
+.city-edition {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 30px;
+  border: 1px solid rgba(34, 89, 74, .18);
+  background: rgba(255, 255, 255, .5);
+}
+
+.city-edition h2 {
+  margin: 0 0 10px;
+  color: var(--green-2);
+  font-family: var(--serif);
+  font-size: 42px;
+  line-height: 1;
+}
+
+.city-edition p:not(.section-label) {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.city-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.city-actions .pill {
+  white-space: nowrap;
+}
+
+.city-actions .city-isha-link {
+  border: 1px solid var(--green-2);
+  background: transparent;
+  color: var(--green-2);
 }
 
 .immersions-grid {
@@ -478,6 +632,28 @@ select {
   color: var(--white);
 }
 
+.workshop-program-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.workshop-program-heading .section-label {
+  margin: 4px 0 0;
+}
+
+.workshop-program-heading h3 {
+  margin: 0;
+  color: var(--white);
+  font-family: var(--serif);
+  font-size: 25px;
+  line-height: 1.05;
+  text-align: right;
+}
+
+
 .program-intro em {
   color: #b9b88e;
   font-style: normal;
@@ -504,6 +680,40 @@ select {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px;
+}
+
+.program-dates {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mini-course-schedule {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 24px;
+}
+
+.mini-course-label {
+  margin: 0;
+  color: var(--peach);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+.mini-course-schedule a,
+.mini-course-schedule span {
+  color: rgba(255, 250, 244, .9);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.mini-course-schedule a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .program-period {
@@ -1427,6 +1637,10 @@ select {
 }
 
 @media (max-width: 900px) {
+
+  .city-editions {
+    grid-template-columns: 1fr;
+  }
   .about .container,
   .venues .container,
   .partners .container,
@@ -1538,7 +1752,36 @@ select {
   }
 
   .topics {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topics > .program-overview,
+  .topics > .program-grid,
+  .mini-course-program {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .topics > .program-grid {
+    margin-top: 34px;
+  }
+
+  .mini-course-program {
+    padding-bottom: 28px;
+    order: 1;
+  }
+
+  .topics > .program-grid {
+    order: 2;
+  }
+
+  .topics > .program-overview {
+    order: 0;
+  }
+
+  .workshop-program-heading {
+    max-width: 370px;
   }
 
   .program-overview {
@@ -1586,6 +1829,44 @@ select {
 }
 
 @media (max-width: 560px) {
+
+  .workshop-program-heading {
+    flex-wrap: nowrap;
+    gap: 12px;
+  }
+
+  .workshop-program-heading .section-label,
+  .workshop-program-heading h3 {
+    white-space: nowrap;
+  }
+
+  .workshop-program-heading .section-label {
+    font-size: 9px;
+    letter-spacing: .08em;
+  }
+
+  .workshop-program-heading h3 {
+    font-size: 20px;
+  }
+
+  .mini-course-heading {
+    flex-wrap: nowrap;
+    gap: 12px;
+  }
+
+  .mini-course-heading .section-label,
+  .mini-course-heading h3 {
+    white-space: nowrap;
+  }
+
+  .mini-course-heading .section-label {
+    font-size: 9px;
+    letter-spacing: .08em;
+  }
+
+  .mini-course-heading h3 {
+    font-size: 20px;
+  }
   .container {
     width: min(100% - 28px, 884px);
   }
