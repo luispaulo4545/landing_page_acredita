@@ -510,6 +510,23 @@ select {
   order: 3;
 }
 
+/* Salvador: 17/10 (minicursos) sempre precede 18/10 (Workshop). */
+.workshop-program #programacao-salvador .mini-course-program {
+  order: 1;
+}
+
+.workshop-program #programacao-salvador .program-overview {
+  order: 2;
+}
+
+.workshop-program #programacao-salvador .workshop-program-heading {
+  order: 3;
+}
+
+.workshop-program #programacao-salvador .program-grid {
+  order: 4;
+}
+
 .immersions {
   padding: 42px 0;
   background: #f4f1eb;
