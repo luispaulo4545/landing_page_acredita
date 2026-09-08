@@ -564,12 +564,18 @@ select {
 }
 
 .city-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 10px;
 }
 
 .city-actions .pill {
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 18px;
+  white-space: normal;
+}
+
+.city-actions time {
   white-space: nowrap;
 }
 
@@ -1846,6 +1852,15 @@ select {
 }
 
 @media (max-width: 560px) {
+
+  .city-edition {
+    padding: 22px 18px;
+  }
+
+  .city-actions .pill {
+    font-size: 11px;
+    letter-spacing: .06em;
+  }
 
   .workshop-program-heading {
     flex-wrap: nowrap;
