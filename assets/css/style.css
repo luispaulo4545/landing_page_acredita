@@ -565,14 +565,27 @@ select {
 
 .city-actions {
   display: grid;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 8px;
 }
 
 .city-actions .pill {
+  width: 100%;
+  max-width: 300px;
+  min-width: 0;
+  min-height: 38px;
   justify-content: space-between;
-  gap: 10px;
-  padding: 12px 18px;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  letter-spacing: .04em;
   white-space: normal;
+}
+
+.city-actions .pill > span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .city-actions time {
@@ -1855,11 +1868,6 @@ select {
 
   .city-edition {
     padding: 22px 18px;
-  }
-
-  .city-actions .pill {
-    font-size: 11px;
-    letter-spacing: .06em;
   }
 
   .workshop-program-heading {
